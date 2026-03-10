@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="uwu.css">
+    <title>Filmy</title>
+</head>
+<body>
+   <header>
+        <h1>Super filmy</h1>
+    </header>
+
+    <main>
+        <table id="movie-table">
+            <thead>
+              <tr>
+                <th>Nazwa</th>
+                <th>Rok produkcji</th>
+                <th>Długość trwania</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Matrix</td>
+                <td>1999</td>
+                <td>136 min</td>
+              </tr>
+              <tr>
+                <td>Inception</td>
+                <td>2010</td>
+                <td>148 min</td>
+              </tr>
+              <tr>
+                <td>Avatar</td>
+                <td>2009</td>
+                <td>162 min</td>
+              </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <nav>
+        <label for="name">Nazwa filmu:</label>
+        <input type="text" id="name" name="name" placeholder="Wpisz nazwę filmu">
+        <button id="search-btn">Wyszukaj</button>
+    </nav>
+
+    <footer>
+        <p>st00pka</p>
+    </footer>
+
+    <script>
+        const API_KEY = "fef75b70"; // Twój klucz OMDb API
+        const searchBtn = document.getElementById('search-btn');
+        const input = document.getElementById('name');
+        const tableBody = document.querySelector('#movie-table tbody');
+
+        async function searchMovies() {
+            const query = input.value.trim();
+            if (!query) return;
+
+            // czyścimy tabelę przed nowym wyszukiwaniem
+            tableBody.innerHTML = "";
+
+            try {
+                // 1️⃣ wyszukiwanie po tytule
+                const response = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (data.Search) {
+                    // 2️⃣ pobieramy szczegóły każdego filmu
+                    for (let movie of data.Search) {
+                        const detailsRes = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}`);
+                        const details = await detailsRes.json();
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${details.Title}</td>
+                            <td>${details.Year}</td>
+                            <td>${details.Runtime ? details.Runtime : '-'}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="3">Brak wyników</td>`;
+                    tableBody.appendChild(row);
+                }
+            } catch (err) {
+                console.error("Błąd API:", err);
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="3">Błąd pobierania danych</td>`;
+                tableBody.appendChild(row);
+            }
+        }
+
+        searchBtn.addEventListener('click', searchMovies);
+        input.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') searchMovies();
+        });
+    </script>
+</body>
+</html>
