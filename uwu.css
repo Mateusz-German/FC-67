@@ -50,16 +50,16 @@ p{
 }
 
 .box:hover .atak img {
-    transform: scaleY(10) scaleX(5) translateX(-55px) translateY(20px);
+    transform: scaleY(7) scaleX(4) translateX(140px) translateY(30px);
 }
 
 /* info - ukryte na start */
 .informacje {
     position: absolute;
-    top: -150px;
-    left: 180px;
-    width: 800px;
-    height: 400px;
+    top: 330px;
+    left: 420px;
+    width: 400px;
+    height: 100px;
 
     background: rgba(200, 200, 220);
     border: 2px solid rgb(80, 80, 120);
